@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1030279952802",
+    "project_id": "amannewsapp",
+    "storage_bucket": "amannewsapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030279952802:android:17cc385c704d3ab2e8dafb",
+        "android_client_info": {
+          "package_name": "com.example.newsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1030279952802-0turtop3totq36uusqc2h22rigsdbhfl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFYliG6hDsst5paLJFoe4aeumWSmm1HeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1030279952802-0turtop3totq36uusqc2h22rigsdbhfl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

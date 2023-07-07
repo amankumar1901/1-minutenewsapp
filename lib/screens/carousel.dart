@@ -26,7 +26,21 @@ class _NewsSliderState extends State<NewsSlider> {
   @override
   void initState() {
     super.initState();
-    fetchInfo();
+    //fetchInfo();
+    users
+        .where(
+          "email",
+          isEqualTo: widget.currentUser.user!.email,
+        )
+        .get()
+        .then(
+      (value) {
+        //setState(() {
+        userFullData = value.docs[0].data() as Map<String, dynamic>;
+        //});
+        return value;
+      },
+    );
   }
 
   void fetchInfo() async {
@@ -46,50 +60,37 @@ class _NewsSliderState extends State<NewsSlider> {
     );
   }
 
-  void addinfo(Article singlearticle) async {
+  Future<void> addinfo(Article singlearticle) async {
     await users
         .where(
           "email",
           isEqualTo: widget.currentUser.user!.email,
         )
         .get()
-        .then(
-      (value) {
-        Map<String, dynamic> userData =
-            value.docs[0].data() as Map<String, dynamic>;
-        List<dynamic> data = userData["userfav"];
-        List<dynamic> data2 = [...data];
+        .then((value) {
+      Map<String, dynamic> userData =
+          value.docs[0].data() as Map<String, dynamic>;
+      List<dynamic> data = userData["userfav"];
 
-        if (data2.isEmpty) {
-          data.add(
-            {
-              "title": singlearticle.title.toString(),
-              "newsurl": singlearticle.url.toString(),
-            },
-          );
-        }
-        for (var val in data2) {
-          if (val["title"] == singlearticle.title.toString()) {
-            data.removeWhere((element) =>
-                element["title"] == singlearticle.title.toString());
-          } else {
-            data.add(
-              {
-                "title": singlearticle.title.toString(),
-                "newsurl": singlearticle.url.toString(),
-              },
-            );
-          }
-        }
+      data.removeWhere(
+          (element) => element["title"] == singlearticle.title.toString());
 
-        log("Total favourite ${data.length}");
-        users.doc(value.docs[0].id).update({
-          "userfav": data,
+      if (!data.contains(singlearticle.title.toString())) {
+        data.add({
+          "title": singlearticle.title.toString(),
+          "newsurl": singlearticle.url.toString(),
         });
-        fetchInfo();
-        return value;
-      },
-    );
+      }
+
+      log("Total favourite ${data.length}");
+      users.doc(value.docs[0].id).update({
+        "userfav": data,
+      });
+      print(data);
+      print("Hello $data");
+      fetchInfo();
+      return value;
+    });
   }
 
   bool isFavourite(String articletitle) {
@@ -192,8 +193,8 @@ class _NewsSliderState extends State<NewsSlider> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: FloatingActionButton(
-                            onPressed: () {
-                              addinfo(singlearticle);
+                            onPressed: () async {
+                              await addinfo(singlearticle);
                             },
                             child: isFavourite(singlearticle.title.toString())
                                 ? const Icon(

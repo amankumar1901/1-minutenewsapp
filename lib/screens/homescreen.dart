@@ -185,16 +185,16 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                       currentUser: widget.currentUser!,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 30),
-                    child: Text(
-                      "Your Favourites",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 25,
-                          color: Color.fromARGB(255, 71, 228, 118)),
-                    ),
-                  ),
+                  // const Padding(
+                  //   padding: EdgeInsets.only(top: 30),
+                  //   child: Text(
+                  //     "Your Favourites",
+                  //     style: TextStyle(
+                  //         fontWeight: FontWeight.w600,
+                  //         fontSize: 25,
+                  //         color: Color.fromARGB(255, 71, 228, 118)),
+                  //   ),
+                  // ),
                   FavouriteListView(user: widget.currentUser),
                 ],
               ),
@@ -222,7 +222,7 @@ class _FavouriteListViewState extends State<FavouriteListView> {
     fetch_favourite();
   }
 
-  void fetch_favourite() {
+  Future<void> fetch_favourite() async {
     FirebaseFirestore.instance
         .collection("users")
         .where("email", isEqualTo: widget.user!.user!.email)
@@ -254,34 +254,58 @@ class _FavouriteListViewState extends State<FavouriteListView> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Column(
+        : Stack(
             children: [
-              for (int i = 0; i < favouriteData!.userfav.length; i++)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Material(
-                    color: ConstColors.primaryc,
-                    borderRadius: BorderRadius.circular(10),
-                    elevation: 10,
-                    child: ListTile(
-                      onTap: () {
-                        launchWebUrl(favouriteData!.userfav[i].newsurl);
-                      },
-                      title: Text(
-                        favouriteData!.userfav[i].title,
-                        style: headingStyle,
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.white,
-                      ),
-                      leading: const Icon(
-                        Icons.sync_rounded,
-                        color: Colors.white,
-                      ),
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 30, left: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Your Favourites",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 25,
+                              color: Color.fromARGB(255, 71, 228, 118)),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              fetch_favourite();
+                            },
+                            icon: Icon(Icons.refresh))
+                      ],
                     ),
                   ),
-                ),
+                  for (int i = 0; i < favouriteData!.userfav.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        color: ConstColors.primaryc,
+                        borderRadius: BorderRadius.circular(10),
+                        elevation: 10,
+                        child: ListTile(
+                          onTap: () {
+                            launchWebUrl(favouriteData!.userfav[i].newsurl);
+                          },
+                          title: Text(
+                            favouriteData!.userfav[i].title,
+                            style: headingStyle,
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.white,
+                          ),
+                          leading: const Icon(
+                            Icons.sync_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           );
   }
